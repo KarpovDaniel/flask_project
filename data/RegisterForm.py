@@ -1,12 +1,14 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired
 from flask import redirect, render_template, Flask
-from wtforms.fields.html5 import EmailField
+from flask_wtf import FlaskForm
 from users import User
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import DataRequired
+
 from data import db_session
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 class RegisterForm(FlaskForm):
