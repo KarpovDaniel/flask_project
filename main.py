@@ -1,10 +1,10 @@
-from flask import Flask, render_template, redirect, request, make_response, session, abort
-from flask_wtf import FlaskForm
+from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
+
 from data import db_session, items, users
-import datetime as dt
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -34,7 +34,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-class NewsForm(FlaskForm):
+class itemsForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
     content = TextAreaField('Содержание')
     is_private = BooleanField('Приватность')
@@ -47,59 +47,59 @@ def logout():
     return redirect('/')
 
 
-@app.route('/news', methods=['GET', 'POST'])
+@app.route('/items', methods=['GET', 'POST'])
 @login_required
-def add_news():
-    form = NewsForm()
+def add_items():
+    form = itemsForm()
     if form.validate_on_submit():
         sessions = db_session.create_session()
-        new = items.News()
-        new.title = form.title.data
-        new.content = form.content.data
-        new.is_private = form.is_private.data
-        current_user.news.append(new)
+        item = items.items()
+        item.title = form.title.data
+        item.content = form.content.data
+        item.is_private = form.is_private.data
+        current_user.items.append(item)
         sessions.merge(current_user)
         sessions.commit()
         return redirect('/')
     return render_template('items.html', title='Добавление новости', form=form)
 
 
-@app.route('/news_delete/<int:id>', methods=['GET', 'POST'])
+@app.route('/items_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def items_delete(id):
     sessions = db_session.create_session()
-    new = sessions.query(items.News).filter(items.News.id == id,
-                                            items.News.user == current_user).first()
-    if new:
-        sessions.delete(new)
+    item = sessions.query(items.items).filter(items.items.id == id,
+                                            items.items.user == current_user).first()
+    if item:
+        sessions.delete(item)
         sessions.commit()
     else:
         abort(404)
     return redirect('/')
 
 
-@app.route('/news/<int:id>', methods=['GET', 'POST'])
+@app.route('/items/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_news(id):
-    form = NewsForm()
+def edit_items(id):
+    form = itemsForm()
     if request.method == 'GET':
         sessions = db_session.create_session()
-        new = sessions.query(items.News).filter(items.News.id == id,
-                                                items.News.user == current_user).first()
-        if new:
-            form.title.data = new.title
-            form.content.data = new.content
-            form.is_private.data = new.is_private
+        item = sessions.query(items.items).filter(items.items.id == id,
+                                                items.items.user == current_user).first()
+        if item:
+            form.title.data = item.title
+            form.content.data = item.content
+            form.is_private.data = item.is_private
         else:
             abort(404)
     if form.validate_on_submit():
         sessions = db_session.create_session()
-        new = sessions.query(items.News).filter(items.News.id == id,
-                                                items.News.user == current_user).first()
-        if new:
-            new.title = form.title.data
-            new.content = form.content.data
-            new.is_private = form.is_private.data
+        item = sessions.query(items.items).filter(items.items.id == id,
+                                                items.items.user == current_user).first()
+        if item:
+            item.title = form.title.data
+            item.content = form.content.data
+            item.is_private = form.is_private.data
             sessions.commit()
             return redirect('/')
         else:
@@ -120,30 +120,11 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route("/cookie_test")
-def cookie_test():
-    visits_count = int(request.cookies.get("visits_count", 0))
-    if visits_count:
-        res = make_response(f'Вы пришли на эту страницу {visits_count + 1} раз')
-        res.set_cookie("visits_count", str(visits_count + 1), max_age=60 * 60 * 24 * 365 * 2)
-    else:
-        res = make_response('Вы пришли на эту страницу в первый раз за 2 года')
-        res.set_cookie("visits_count", "1", max_age=60 * 60 * 24 * 365 * 2)
-    return res
-
-
-@app.route('/session_test')
-def session_test():
-    session.permanent = True
-    session['visits_count'] = session.get('visits_count', 0) + 1
-    return f"Вы зашли на страницу {session['visits_count']} раз!"
-
-
 @app.route("/")
 def index():
     sessions = db_session.create_session()
-    new = sessions.query(items.News).filter(items.News.is_private != True)
-    return render_template("index.html", news=new)
+    item = sessions.query(items.items).filter(items.items.is_private != True)
+    return render_template("index.html", items=item)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -162,9 +143,8 @@ def reqister():
         user = users.User(
             name=form.name.data,
             email=form.email.data,
-            about=form.about.data
+            password=form.password.data
         )
-        user.set_password(form.password.data)
         sessions.add(user)
         sessions.commit()
         return redirect('/login')
