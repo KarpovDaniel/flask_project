@@ -34,7 +34,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
-class itemsForm(FlaskForm):
+class ItemsForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
     content = TextAreaField('Содержание')
     is_private = BooleanField('Приватность')
@@ -50,10 +50,10 @@ def logout():
 @app.route('/items', methods=['GET', 'POST'])
 @login_required
 def add_items():
-    form = itemsForm()
+    form = ItemsForm()
     if form.validate_on_submit():
         sessions = db_session.create_session()
-        item = items.items()
+        item = items.Items()
         item.title = form.title.data
         item.content = form.content.data
         item.is_private = form.is_private.data
@@ -68,8 +68,8 @@ def add_items():
 @login_required
 def items_delete(id):
     sessions = db_session.create_session()
-    item = sessions.query(items.items).filter(items.items.id == id,
-                                            items.items.user == current_user).first()
+    item = sessions.query(items.Items).filter(items.Items.id == id,
+                                              items.Items.user == current_user).first()
     if item:
         sessions.delete(item)
         sessions.commit()
@@ -81,11 +81,11 @@ def items_delete(id):
 @app.route('/items/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_items(id):
-    form = itemsForm()
+    form = ItemsForm()
     if request.method == 'GET':
         sessions = db_session.create_session()
-        item = sessions.query(items.items).filter(items.items.id == id,
-                                                items.items.user == current_user).first()
+        item = sessions.query(items.Items).filter(items.Items.id == id,
+                                                  items.Items.user == current_user).first()
         if item:
             form.title.data = item.title
             form.content.data = item.content
@@ -94,8 +94,8 @@ def edit_items(id):
             abort(404)
     if form.validate_on_submit():
         sessions = db_session.create_session()
-        item = sessions.query(items.items).filter(items.items.id == id,
-                                                items.items.user == current_user).first()
+        item = sessions.query(items.Items).filter(items.Items.id == id,
+                                                  items.Items.user == current_user).first()
         if item:
             item.title = form.title.data
             item.content = form.content.data
@@ -123,7 +123,7 @@ def login():
 @app.route("/")
 def index():
     sessions = db_session.create_session()
-    item = sessions.query(items.items).filter(items.items.is_private != True)
+    item = sessions.query(items.Items).filter(items.Items.is_private is not True)
     return render_template("index.html", items=item)
 
 
