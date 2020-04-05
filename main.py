@@ -50,15 +50,19 @@ def logout():
 @login_required
 def add_items():
     form = ItemsForm()
-    if form.validate_on_submit():
-        sessions = db_session.create_session()
-        item = items.Items()
-        item.title = form.title.data
-        item.content = form.content.data
-        current_user.items.append(item)
-        sessions.merge(current_user)
-        sessions.commit()
-        return redirect('/')
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save('res.png')
+        if form.validate_on_submit():
+            sessions = db_session.create_session()
+            item = items.Items()
+            item.title = form.title.data
+            item.content = form.content.data
+            item.photo = open('res.png', 'rb').read()
+            current_user.items.append(item)
+            sessions.merge(current_user)
+            sessions.commit()
+            return redirect('/')
     return render_template('items.html', title='Добавление товара', form=form)
 
 

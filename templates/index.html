@@ -6,7 +6,7 @@
 <div>
     <h3><b style="margin-top: 25px; margin-left: -250px;"> {{item.title}}</b></h3>
 <p style="margin-left: -350px; margin-top: 25px;">
-    {{item.content}}
+    {{item.content}} {{item.photo}}
 </p>
 {% if current_user.is_authenticated and current_user == item.user %}
     <div>
