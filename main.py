@@ -37,7 +37,7 @@ class LoginForm(FlaskForm):
 class ItemsForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
     content = TextAreaField('Содержание')
-    is_private = BooleanField('Приватность')
+
     submit = SubmitField('Применить')
 
 
@@ -56,7 +56,6 @@ def add_items():
         item = items.Items()
         item.title = form.title.data
         item.content = form.content.data
-        item.is_private = form.is_private.data
         current_user.items.append(item)
         sessions.merge(current_user)
         sessions.commit()
@@ -89,7 +88,6 @@ def edit_items(id):
         if item:
             form.title.data = item.title
             form.content.data = item.content
-            form.is_private.data = item.is_private
         else:
             abort(404)
     if form.validate_on_submit():
@@ -99,7 +97,6 @@ def edit_items(id):
         if item:
             item.title = form.title.data
             item.content = form.content.data
-            item.is_private = form.is_private.data
             sessions.commit()
             return redirect('/')
         else:
@@ -123,7 +120,7 @@ def login():
 @app.route("/")
 def index():
     sessions = db_session.create_session()
-    item = sessions.query(items.Items).filter(items.Items.is_private is not True)
+    item = sessions.query(items.Items)
     return render_template("index.html", items=item)
 
 
