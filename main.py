@@ -6,6 +6,7 @@ from wtforms.validators import DataRequired
 
 from data import db_session, items, users
 
+count_items = 0
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
@@ -36,7 +37,6 @@ class LoginForm(FlaskForm):
 class ItemsForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
     content = TextAreaField('Содержание')
-
     submit = SubmitField('Применить')
 
 
@@ -49,16 +49,18 @@ def logout():
 @app.route('/items', methods=['GET', 'POST'])
 @login_required
 def add_items():
+    global count_items
     form = ItemsForm()
     if request.method == 'POST':
         f = request.files['file']
-        f.save('res.png')
+        f.save('images/image' + str(count_items) + '.png')
         if form.validate_on_submit():
             sessions = db_session.create_session()
             item = items.Items()
             item.title = form.title.data
             item.content = form.content.data
-            item.photo = open('res.png', 'rb').read()
+            item.photo = 'images/image' + str(count_items) + '.png'
+            count_items += 1
             current_user.items.append(item)
             sessions.merge(current_user)
             sessions.commit()
@@ -152,7 +154,11 @@ def reqister():
 
 
 def main():
+    global count_items
     db_session.global_init("db/blogs.sqlite")
+    sessions = db_session.create_session()
+    count_items += len(list(sessions.query(items.Items)))
+    sessions.close()
     app.run()
 
 
