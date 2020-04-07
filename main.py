@@ -53,13 +53,13 @@ def add_items():
     form = ItemsForm()
     if request.method == 'POST':
         f = request.files['file']
-        f.save('images/image' + str(count_items) + '.png')
+        f.save('static/images/image' + str(count_items) + '.png')
         if form.validate_on_submit():
             sessions = db_session.create_session()
             item = items.Items()
             item.title = form.title.data
             item.content = form.content.data
-            item.photo = 'images/image' + str(count_items) + '.png'
+            item.photo = '/static/images/image' + str(count_items) + '.png'
             count_items += 1
             current_user.items.append(item)
             sessions.merge(current_user)
@@ -71,10 +71,12 @@ def add_items():
 @app.route('/items_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def items_delete(id):
+    global count_items
     sessions = db_session.create_session()
     item = sessions.query(items.Items).filter(items.Items.id == id,
                                               items.Items.user == current_user).first()
     if item:
+        count_items -= 1
         sessions.delete(item)
         sessions.commit()
     else:

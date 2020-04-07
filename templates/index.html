@@ -1,23 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Товары в нашем интернет-магазине "GusShop.AN"</h1>
+<h1 style="margin-top: 20px;">Товары в нашем интернет-магазине "GusShop.ru"</h1>
 {% for item in items %}
 <div>
-    <h3><b style="margin-top: 25px; margin-left: -250px;"> {{item.title}}</b></h3>
-<p style="margin-left: -350px; margin-top: 25px;">
-    {{item.content}} <img src="/static/images/image0.png" alt="Упс, мы потеряли схему">
-</p>
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 40px;"><b
+            style="margin-top: 25px; margin-left: -250px;"> {{item.title}}</b></h3>
+<p><img style="width: 310px; margin-left: -100px; height: 260px;"
+        src={{item.photo}} align="left">{{ item.content }}</p>
 {% if current_user.is_authenticated and current_user == item.user %}
-    <div>
-        <a style="margin-left:-340px;" href="/items/{{ item.id }}" class="btn btn-link">Изменить</a>
-        <a href="/items_delete/{{ item.id }}" class="btn btn-link">Удалить</a>
+    <div style="margin-top: 40px; margin-left: -90px;">
+        <a href="/items/{{ item.id }}" class="btn btn-primary">Изменить</a>
+        <a style="background-color: #589ce0; border: 1px solid #589ce0;" class="btn btn-primary"
+           href="/items_delete/{{ item.id }}">Удалить</a>
     </div>
 {% endif %}
 </div>
 {% endfor %}
 {% if current_user.is_authenticated %}
-    <a style="margin-left:-350px; margin-top:30px" href="/items" class="btn btn-link">Добавить
-        товар</a>
+    <a href="/items" style="margin-top: 10px; margin-left: -90px; background-color: #0a4761;
+     border: 1px solid #0a4761;" class="btn btn-primary">Добавить товар</a>
 {% endif %}
 {% endblock %}
