@@ -5,9 +5,8 @@ from wtforms import IntegerField
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
 
-from data import db_session, items, users
+from data import db_session, items, users, basket
 
-count_items = 0
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
@@ -51,19 +50,18 @@ def logout():
 @app.route('/items', methods=['GET', 'POST'])
 @login_required
 def add_items():
-    global count_items
     form = ItemsForm()
     if request.method == 'POST':
         f = request.files['file']
-        f.save('static/images/image' + str(count_items) + '.png')
+        item = items.Items()
+        f.save('static/images/image' + str(item.id - 1) + '.png')
         if form.validate_on_submit():
             sessions = db_session.create_session()
             item = items.Items()
             item.title = form.title.data
             item.content = form.content.data
             item.count = form.count.data
-            item.photo = '/static/images/image' + str(count_items) + '.png'
-            count_items += 1
+            item.photo = '/static/images/image' + str(item.id - 1) + '.png'
             current_user.items.append(item)
             sessions.merge(current_user)
             sessions.commit()
@@ -74,12 +72,10 @@ def add_items():
 @app.route('/items_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def items_delete(id):
-    global count_items
     sessions = db_session.create_session()
     item = sessions.query(items.Items).filter(items.Items.id == id,
                                               items.Items.user == current_user).first()
     if item:
-        count_items -= 1
         sessions.delete(item)
         sessions.commit()
     else:
@@ -140,7 +136,7 @@ def index():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():
+def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -163,11 +159,16 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+@app.route("/basket'")
+def basket():
+    sessions = db_session.create_session()
+    item = sessions.query(basket.Basket)
+    return render_template("basket.html", basket=item)
+
+
 def main():
-    global count_items
     db_session.global_init("db/blogs.sqlite")
     sessions = db_session.create_session()
-    count_items += len(list(sessions.query(items.Items)))
     sessions.close()
     app.run()
 
