@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 style="margin-top: 20px;">Товары в нашем интернет-магазине "GusShop.ru"</h1>
+<h1 style="margin-top: 20px;">Товары в нашем интернет-магазине "GusShop.AN"</h1>
 {% for item in items %}
 <div>
-    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 40px;"><b
-            style="margin-top: 25px; margin-left: -250px;"> {{item.title}}</b></h3>
-<p><img style="width: 310px; margin-left: -100px; height: 260px;"
-        src={{item.photo}} align="left">{{ item.content }}</p>
-{% if current_user.is_authenticated and current_user == item.user %}
-    <div style="margin-top: 40px; margin-left: -90px;">
-        <a href="/items/{{ item.id }}" class="btn btn-primary">Изменить</a>
-        <a style="background-color: #589ce0; border: 1px solid #589ce0;" class="btn btn-primary"
-           href="/items_delete/{{ item.id }}">Удалить</a>
-    </div>
-{% endif %}
+    <table style="margin-top: 60px;" border="0" width="100%" cellpadding="0">
+   <tr>
+    <th><img style="width:400px; height: 300px;" src={{item.photo}} ></th>
+       <th><h3> {{ item.title }} </h3><br> {{ item.content }} </th>
+   </tr>
+   <tr>
+    <td><div>
+        {% if current_user.id in (1, 2) %}
+            <a href="/items/{{ item.id }}" class="btn btn-primary">Изменить</a>
+            <a style="background-color: #589ce0; border: 1px solid #589ce0;" class="btn btn-primary"
+               href="/items_delete/{{ item.id }}">Удалить</a>
+        {% endif %}
+    </div></td>
+    <td>Количество товара: {{ item.count }} </td>
+  </tr>
+ </table>
 </div>
 {% endfor %}
-{% if current_user.is_authenticated %}
+{% if current_user.id in (1, 2) %}
     <a href="/items" style="margin-top: 10px; margin-left: -90px; background-color: #0a4761;
      border: 1px solid #0a4761;" class="btn btn-primary">Добавить товар</a>
 {% endif %}

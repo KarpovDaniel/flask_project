@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
+from wtforms import IntegerField
 from wtforms.validators import DataRequired
 
 from data import db_session, items, users
@@ -37,6 +38,7 @@ class LoginForm(FlaskForm):
 class ItemsForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
     content = TextAreaField('Содержание')
+    count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
 
@@ -59,6 +61,7 @@ def add_items():
             item = items.Items()
             item.title = form.title.data
             item.content = form.content.data
+            item.count = form.count.data
             item.photo = '/static/images/image' + str(count_items) + '.png'
             count_items += 1
             current_user.items.append(item)
@@ -102,8 +105,12 @@ def edit_items(id):
         item = sessions.query(items.Items).filter(items.Items.id == id,
                                                   items.Items.user == current_user).first()
         if item:
+            f = request.files['file']
+            f.save('static/images/image' + str(item.id - 1) + '.png')
             item.title = form.title.data
             item.content = form.content.data
+            item.count = form.count.data
+            item.photo = '/static/images/image' + str(item.id - 1) + '.png'
             sessions.commit()
             return redirect('/')
         else:

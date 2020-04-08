@@ -15,5 +15,6 @@ class Items(SqlAlchemyBase, SerializerMixin):
     content = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
+    count = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     photo = sqlalchemy.Column(sqlalchemy.VARCHAR, nullable=True)
     user = orm.relation('User')
