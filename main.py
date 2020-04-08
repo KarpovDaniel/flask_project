@@ -159,11 +159,12 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-@app.route("/basket'")
-def basket():
+@app.route("/basket")
+def add_basket():
     sessions = db_session.create_session()
     item = sessions.query(basket.Basket)
     return render_template("basket.html", basket=item)
+
 
 
 def main():

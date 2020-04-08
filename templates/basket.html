@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 style="margin-top: 20px;">Корзина"</h1>
+<h1 style="margin-top: 20px;">Корзина</h1>
 {% for item in basket %}
 <div>
     <table style="margin-top: 60px;" border="0" width="100%" cellpadding="0">
@@ -20,7 +20,7 @@
                     {% endif %}
                 </div>
             </td>
-            <td>Количество товара: {{ basket.items_count }}</td>
+            <td>Количество товара: {{ item.count }}</td>
         </tr>
     </table>
 </div>
