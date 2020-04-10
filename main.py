@@ -168,16 +168,21 @@ def add_basket():
 
 @app.route("/basket/<int:id>")
 def edit_basket(id):
-    basket_item = basket.Basket()
-    basket_item.item_id = id
-    basket_item.user_id = current_user.id
     sessions = db_session.create_session()
+    basket_item = True
+    for item in sessions.query(basket.Basket):
+        if id == item.item_id:
+            item.count += 1
+            basket_item = False
     item = sessions.query(items.Items).get(id)
-    if item:
+    if basket_item:
+        basket_item = basket.Basket()
+        basket_item.item_id = id
+        basket_item.user_id = current_user.id
         basket_item.photo = item.photo
         basket_item.title = item.title
+        sessions.add(basket_item)
     item.count -= 1
-    sessions.add(basket_item)
     sessions.commit()
     return redirect('/')
 
@@ -189,8 +194,8 @@ def basket_delete(id):
     items_id = item.item_id
     item_basket = sessions.query(items.Items).get(items_id)
     if item:
+        item_basket.count += item.count
         sessions.delete(item)
-        item_basket.count += 1
         sessions.commit()
     else:
         abort(404)
