@@ -121,7 +121,7 @@ def login():
         sessions = db_session.create_session()
         user = sessions.query(users.User).filter(users.User.email ==
                                                  form.email.data).first()
-        if user and user.password == form.password.data:
+        if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
         return render_template('login.html', message='Неправильный логин или пароль', form=form)
@@ -151,8 +151,8 @@ def register():
         user = users.User(
             name=form.name.data,
             email=form.email.data,
-            password=form.password.data
         )
+        user.set_password(form.password.data)
         sessions.add(user)
         sessions.commit()
         return redirect('/login')
