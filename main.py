@@ -166,6 +166,20 @@ def add_basket():
     return render_template("basket.html", basket=item)
 
 
+@app.route("/basket/<int:id>")
+def edit_basket(id):
+    basket_item = basket.Basket()
+    basket_item.item_id = id
+    basket_item.user_id = current_user.id
+    sessions = db_session.create_session()
+    item = sessions.query(items.Items).get(id)
+    if item:
+        basket_item.photo = item.photo
+        basket_item.title = item.title
+    sessions.add(basket_item)
+    sessions.commit()
+    return redirect('/basket')
+
 
 def main():
     db_session.global_init("db/blogs.sqlite")

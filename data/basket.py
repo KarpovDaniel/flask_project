@@ -12,6 +12,6 @@ class Basket(SqlAlchemyBase, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     item_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("items.id"))
-    count = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    count = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=1)
     photo = sqlalchemy.Column(sqlalchemy.VARCHAR, nullable=True)
     user = orm.relation('User')
