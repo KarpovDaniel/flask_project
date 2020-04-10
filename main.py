@@ -176,8 +176,24 @@ def edit_basket(id):
     if item:
         basket_item.photo = item.photo
         basket_item.title = item.title
+    item.count -= 1
     sessions.add(basket_item)
     sessions.commit()
+    return redirect('/')
+
+
+@app.route('/basket_delete/<int:id>', methods=['GET', 'POST'])
+def basket_delete(id):
+    sessions = db_session.create_session()
+    item = sessions.query(basket.Basket).get(id)
+    items_id = item.item_id
+    item_basket = sessions.query(items.Items).get(items_id)
+    if item:
+        sessions.delete(item)
+        item_basket.count += 1
+        sessions.commit()
+    else:
+        abort(404)
     return redirect('/basket')
 
 

@@ -16,7 +16,7 @@
                     <a href="/items/{{ item.id }}" class="btn btn-primary">Изменить</a>
                     <a class="btn btn-primary"
                        href="/items_delete/{{ item.id }}">Удалить</a>
-                    {% elif current_user.is_authenticated %}
+                    {% elif current_user.is_authenticated and item.count > 0%}
                     <a href="/basket/{{ item.id }}" class="btn btn-primary">Добавить в корзину</a>
                     {% endif %}
                 </div>
