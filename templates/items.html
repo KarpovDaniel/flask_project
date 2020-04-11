@@ -15,6 +15,14 @@
     {% endfor %}
     </p>
     <p>
+        {{ form.price.label }} <br>
+        {{ form.price(class="form-control") }} <br>
+    </p>
+    <p>
+        {{ form.main_characteristics.label }} <br>
+        {{ form.main_characteristics(class="form-control") }} <br>
+    </p>
+    <p>
         {{ form.content.label }} <br>
         {{ form.content(class="form-control") }} <br>
         {% for error in form.content.errors %}
@@ -22,6 +30,10 @@
         {{ error }}
     </p>
     {% endfor %}
+    </p>
+    <p>
+        {{ form.specifications.label }} <br>
+        {{ form.specifications(class="form-control") }} <br>
     </p>
     <p>
         {{ form.count.label }} <br>

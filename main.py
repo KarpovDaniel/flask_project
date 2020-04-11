@@ -11,6 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+count_items = 0
 
 
 @login_manager.user_loader
@@ -36,7 +37,17 @@ class LoginForm(FlaskForm):
 
 class ItemsForm(FlaskForm):
     title = StringField('Заголовок', validators=[DataRequired()])
-    content = TextAreaField('Содержание')
+    main_characteristics = TextAreaField('Главные характеристики')
+    content = TextAreaField('Описание товара')
+    price = StringField('Цена')
+    specifications = TextAreaField('Характеристики')
+    count = IntegerField('Количество')
+    submit = SubmitField('Применить')
+
+
+class EditForm(FlaskForm):
+    title = StringField('Заголовок', validators=[DataRequired()])
+    price = StringField('Цена')
     count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
@@ -50,21 +61,24 @@ def logout():
 @app.route('/items', methods=['GET', 'POST'])
 @login_required
 def add_items():
+    global count_items
     form = ItemsForm()
     if request.method == 'POST':
         f = request.files['file']
         item = items.Items()
-        f.save('static/images/image' + str(item.id - 1) + '.png')
+        f.save('static/images/image' + str(count_items) + '.png')
         if form.validate_on_submit():
             sessions = db_session.create_session()
             item = items.Items()
             item.title = form.title.data
             item.content = form.content.data
             item.count = form.count.data
-            item.photo = '/static/images/image' + str(item.id - 1) + '.png'
+            item.specifications = form.specifications.data
+            item.photo = '/static/images/image' + str(count_items) + '.png'
             current_user.items.append(item)
             sessions.merge(current_user)
             sessions.commit()
+            count_items += 1
             return redirect('/')
     return render_template('items.html', title='Добавление товара', form=form)
 
@@ -72,10 +86,12 @@ def add_items():
 @app.route('/items_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def items_delete(id):
+    global count_items
     sessions = db_session.create_session()
     item = sessions.query(items.Items).filter(items.Items.id == id,
                                               items.Items.user == current_user).first()
     if item:
+        count_items -= 1
         sessions.delete(item)
         sessions.commit()
     else:
@@ -86,14 +102,13 @@ def items_delete(id):
 @app.route('/items/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_items(id):
-    form = ItemsForm()
+    form = EditForm()
     if request.method == 'GET':
         sessions = db_session.create_session()
         item = sessions.query(items.Items).filter(items.Items.id == id,
                                                   items.Items.user == current_user).first()
         if item:
             form.title.data = item.title
-            form.content.data = item.content
         else:
             abort(404)
     if form.validate_on_submit():
@@ -101,17 +116,14 @@ def edit_items(id):
         item = sessions.query(items.Items).filter(items.Items.id == id,
                                                   items.Items.user == current_user).first()
         if item:
-            f = request.files['file']
-            f.save('static/images/image' + str(item.id - 1) + '.png')
             item.title = form.title.data
-            item.content = form.content.data
+            item.price = form.price.data
             item.count = form.count.data
-            item.photo = '/static/images/image' + str(item.id - 1) + '.png'
             sessions.commit()
             return redirect('/')
         else:
             abort(404)
-    return render_template('items.html', title='Редактирование товара', form=form)
+    return render_template('editor.html', title='Редактирование товара', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -166,8 +178,8 @@ def add_basket():
     return render_template("basket.html", basket=item)
 
 
-@app.route("/basket/<int:id>")
-def edit_basket(id):
+@app.route("/basket/<int:id>/<int:flag>")
+def edit_basket(id, flag):
     sessions = db_session.create_session()
     basket_item = True
     for item in sessions.query(basket.Basket):
@@ -184,7 +196,9 @@ def edit_basket(id):
         sessions.add(basket_item)
     item.count -= 1
     sessions.commit()
-    return redirect('/')
+    if not flag:
+        return redirect('/')
+    return redirect('/about_item/' + str(id))
 
 
 @app.route('/basket_delete/<int:id>', methods=['GET', 'POST'])
@@ -202,9 +216,18 @@ def basket_delete(id):
     return redirect('/basket')
 
 
+@app.route('/about_item/<int:id>', methods=['GET', 'POST'])
+def about_item(id):
+    sessions = db_session.create_session()
+    item = sessions.query(items.Items).get(id)
+    return render_template("single_item.html", item=item)
+
+
 def main():
+    global count_items
     db_session.global_init("db/blogs.sqlite")
     sessions = db_session.create_session()
+    count_items += len(list(sessions.query(items.Items)))
     sessions.close()
     app.run()
 
