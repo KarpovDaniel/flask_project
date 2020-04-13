@@ -10,16 +10,24 @@
     <title>GusShop.AN</title>
     <style>
         body {
-        background: #ffffff;
+        background: #f6f6f6;
         color: #0;
         }
+        .outline {
+        background: #ffffff;
+        border-radius: 15px;
+        border: 0px solid white;
+        padding: 0 0px;
+        }
+
+
 
     </style>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-light bg-primary">
-        <a class="navbar-brand" href="/">GusShop.AN</a>
+        <a class="navbar-brand" href="/"><h3>GusShop.AN</h3></a>
         {% if current_user.is_authenticated %}
         {% if current_user.id not in (1, 2) %}
         <a style="margin-right: -1300px; color: #ffffff;" class="navbar-brand"

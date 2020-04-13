@@ -3,16 +3,23 @@
 {% block content %}
 {% for item in items %}
 <div>
-    <table style="margin-top: 40px; margin-left:-200px" border="0" width="140%" cellpadding="0">
+    <table style="margin-top: 40px;" border="0" width="100%" cellpadding="0" class="outline">
         <tr>
-            <th><img style="width:220px; height: 150px; margin-top:60px;" src={{item.photo}}></th>
+            <th><img style="width:220px; height: 150px; margin-top:10px;" src={{item.photo}}></th>
             <th>
                 <h3 style="margin-left:20px;"><a href="/about_item/{{ item.id }}">
                     {{ item.title }} </a>
                 </h3>
-                <h4 style="margin-top:-40px; margin-left:1200px"> {{ item.price }}</h4>
+                <h4 style="margin-top:-40px; margin-left:775px"> {{ item.price }}</h4>
                 <br>
-                <h6 style="margin-left:20px">{{ item.content }}</h6></th>
+                <h6 style="margin-left:20px">{{ item.main_characteristics }}</h6>
+                {% if current_user.id not in (1, 2) and item.count > 0 and
+                current_user.is_authenticated %}
+                <a href="/basket/{{ item.id }}/0" class="btn btn-primary"
+                       style="margin-left:680px; margin-top:-5px; width:180px; height:40px;">Добавить в
+                        корзину</a>
+                {% endif %}
+            </th>
         </tr>
         <tr>
             <td>
@@ -23,14 +30,11 @@
                     </a>
                     <a class="btn btn-primary"
                        href="/items_delete/{{ item.id }} " style="margin-top:15px">Удалить</a>
-                    {% elif current_user.is_authenticated and item.count > 0 %}
-                    <a href="/basket/{{ item.id }}/0" class="btn btn-primary"
-                       style="margin-top:30px">Добавить в
-                        корзину</a>
                     {% endif %}
                 </div>
             </td>
-            <td><p style="margin-left:20px">Количество товара: {{ item.count }} </p></td>
+            <td><p style="margin-left:120px; margin-top:-30px;">Количество товара: {{ item.count }}
+            </p></td>
         </tr>
     </table>
 </div>

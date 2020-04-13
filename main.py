@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, abort, session
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import IntegerField
@@ -144,6 +144,9 @@ def login():
 def index():
     sessions = db_session.create_session()
     item = sessions.query(items.Items)
+    if request.method == 'POST':
+        session['tag'] = request.form['search']
+        return redirect('/')
     return render_template("index.html", items=item)
 
 
@@ -178,12 +181,14 @@ def add_basket():
     return render_template("basket.html", basket=item)
 
 
+
 @app.route("/basket/<int:id>/<int:flag>")
 def edit_basket(id, flag):
     sessions = db_session.create_session()
     basket_item = True
+    basket_id = basket.Basket()
     for item in sessions.query(basket.Basket):
-        if id == item.item_id:
+        if id == item.item_id and current_user.id == basket_id.user_id:
             item.count += 1
             basket_item = False
     item = sessions.query(items.Items).get(id)
