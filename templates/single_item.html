@@ -25,7 +25,26 @@
                 <h2 align="center" style="margin-top:10px;"> Описание товара: </h2> <br>
                 <h6 style="margin-left:15px;"> {{ item.content }} </h6>
                 <h2 align="center">Характеристики: </h2> <br>
-                <h6 style="margin-left:15px;"> {{ item.specifications }} </h6>
+                <h4 style="margin-left:15px;"><b> Экран: </b></h4>
+                {% for dspl in item.display.split('\n') %}
+                    <h6 style="margin-left:15px;"> {{ dspl }} </h6>
+                {% endfor %}
+                <h4 style="margin-left:15px;"><b> Процессор: </b></h4>
+                {% for process in item.processor.split('\n') %}
+                    <h6 style="margin-left:15px;"> {{ process }} </h6>
+                {% endfor %}
+                <h4 style="margin-left:15px;"><b> Видеокарта: </b></h4>
+                {% for video in item.videoadapter.split('\n') %}
+                    <h6 style="margin-left:15px;"> {{ video }} </h6>
+                {% endfor %}
+                <h4 style="margin-left:15px;"><b> ОЗУ: </b></h4>
+                {% for ram in item.ram.split('\n') %}
+                    <h6 style="margin-left:15px;"> {{ ram }} </h6>
+                {% endfor %}
+                <h4 style="margin-left:15px;"><b> Батарея: </b></h4>
+                {% for battery in item.battery.split('\n') %}
+                    <h6 style="margin-left:15px;"> {{ battery }} </h6>
+                {% endfor %} <br>
             </th>
         </tr>
     </table>

@@ -40,7 +40,11 @@ class ItemsForm(FlaskForm):
     main_characteristics = TextAreaField('Главные характеристики')
     content = TextAreaField('Описание товара')
     price = StringField('Цена')
-    specifications = TextAreaField('Характеристики')
+    display = TextAreaField('Экран')
+    processor = TextAreaField('Процессор')
+    videoadapter = TextAreaField('Видеокарта')
+    ram = TextAreaField('ОЗУ')
+    battery = TextAreaField('Батарея и автономность')
     count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
@@ -65,7 +69,6 @@ def add_items():
     form = ItemsForm()
     if request.method == 'POST':
         f = request.files['file']
-        item = items.Items()
         f.save('static/images/image' + str(count_items) + '.png')
         if form.validate_on_submit():
             sessions = db_session.create_session()
@@ -73,7 +76,13 @@ def add_items():
             item.title = form.title.data
             item.content = form.content.data
             item.count = form.count.data
-            item.specifications = form.specifications.data
+            item.display = form.display.data
+            item.processor = form.processor.data
+            item.ram = form.ram.data
+            item.videoadapter = form.videoadapter.data
+            item.battery = form.battery.data
+            item.main_characteristics = form.main_characteristics.data
+            item.price = form.price.data
             item.photo = '/static/images/image' + str(count_items) + '.png'
             current_user.items.append(item)
             sessions.merge(current_user)
@@ -179,7 +188,6 @@ def add_basket():
     sessions = db_session.create_session()
     item = sessions.query(basket.Basket)
     return render_template("basket.html", basket=item)
-
 
 
 @app.route("/basket/<int:id>/<int:flag>")
