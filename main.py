@@ -84,8 +84,7 @@ def add_items():
             item.main_characteristics = form.main_characteristics.data
             item.price = form.price.data
             item.photo = '/static/images/image' + str(count_items) + '.png'
-            current_user.items.append(item)
-            sessions.merge(current_user)
+            sessions.add(item)
             sessions.commit()
             count_items += 1
             return redirect('/')
@@ -97,8 +96,7 @@ def add_items():
 def items_delete(id):
     global count_items
     sessions = db_session.create_session()
-    item = sessions.query(items.Items).filter(items.Items.id == id,
-                                              items.Items.user == current_user).first()
+    item = sessions.query(items.Items).filter(items.Items.id == id).first()
     if item:
         count_items -= 1
         sessions.delete(item)
@@ -114,24 +112,16 @@ def edit_items(id):
     form = EditForm()
     if request.method == 'GET':
         sessions = db_session.create_session()
-        item = sessions.query(items.Items).filter(items.Items.id == id,
-                                                  items.Items.user == current_user).first()
-        if item:
-            form.title.data = item.title
-        else:
-            abort(404)
+        item = sessions.query(items.Items).filter(items.Items.id == id).first()
+        form.title.data = item.title
     if form.validate_on_submit():
         sessions = db_session.create_session()
-        item = sessions.query(items.Items).filter(items.Items.id == id,
-                                                  items.Items.user == current_user).first()
-        if item:
-            item.title = form.title.data
-            item.price = form.price.data
-            item.count = form.count.data
-            sessions.commit()
-            return redirect('/')
-        else:
-            abort(404)
+        item = sessions.query(items.Items).filter(items.Items.id == id).first()
+        item.title = form.title.data
+        item.price = form.price.data
+        item.count = form.count.data
+        sessions.commit()
+        return redirect('/')
     return render_template('editor.html', title='Редактирование товара', form=form)
 
 
@@ -174,7 +164,7 @@ def register():
                                    message="Такой пользователь уже есть")
         user = users.User(
             name=form.name.data,
-            email=form.email.data,
+            email=form.email.data
         )
         user.set_password(form.password.data)
         sessions.add(user)
@@ -194,9 +184,8 @@ def add_basket():
 def edit_basket(id, flag):
     sessions = db_session.create_session()
     basket_item = True
-    basket_id = basket.Basket()
     for item in sessions.query(basket.Basket):
-        if id == item.item_id and current_user.id == basket_id.user_id:
+        if id == item.item_id and current_user.id == item.user_id:
             item.count += 1
             basket_item = False
     item = sessions.query(items.Items).get(id)
