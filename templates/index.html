@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% set vars = {'flag': True} %}
 {% for item in items %}
 <div>
     {% if search in item.title.lower() %}
+    {% if vars.update({'flag': False}) %} {% endif %}
     <table style="margin-top: 40px;" border="0" width="100%" cellpadding="0" class="outline">
         <tr>
             <th><img style="width:220px; height: 150px; margin-top:10px;" src={{item.photo}}></th>
@@ -40,10 +42,10 @@
     {% endif %}
 </div>
 {% endfor %}
-{% if flag == 0 %}
-    <h1 align="center">
-        Ничего не найдено!
-    </h1>
+{% if vars.flag %}
+<h1 align="center">
+    Ничего не найдено!
+</h1>
 {% endif %}
 {% if current_user.id in (1, 2) %}
 <a href="/items" style="margin-top: 10px; background-color: #0a4761;
