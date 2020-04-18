@@ -3,6 +3,7 @@
 {% block content %}
 {% for item in items %}
 <div>
+    {% if search in item.title.lower() %}
     <table style="margin-top: 40px;" border="0" width="100%" cellpadding="0" class="outline">
         <tr>
             <th><img style="width:220px; height: 150px; margin-top:10px;" src={{item.photo}}></th>
@@ -16,8 +17,7 @@
                 {% if current_user.id not in (1, 2) and item.count > 0 and
                 current_user.is_authenticated %}
                 <a href="/basket/{{ item.id }}/0" class="btn btn-primary"
-                       style="margin-left:680px; margin-top:-5px; width:180px; height:40px;">Добавить в
-                        корзину</a>
+                   style="margin-left:680px; margin-top:-5px; width:180px; height:40px;">Добавить в корзину</a>
                 {% endif %}
             </th>
         </tr>
@@ -37,8 +37,14 @@
             </p></td>
         </tr>
     </table>
+    {% endif %}
 </div>
 {% endfor %}
+{% if flag == 0 %}
+    <h1 align="center">
+        Ничего не найдено!
+    </h1>
+{% endif %}
 {% if current_user.id in (1, 2) %}
 <a href="/items" style="margin-top: 10px; background-color: #0a4761;
      border: 1px solid #0a4761;" class="btn btn-primary">Добавить товар</a>

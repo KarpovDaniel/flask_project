@@ -106,6 +106,15 @@ def items_delete(id):
     return redirect('/')
 
 
+@app.route('/buy/<int:id>')
+def buy(id):
+    sessions = db_session.create_session()
+    item = sessions.query(items.Items).get(id)
+    item.count -= 1
+    sessions.commit()
+    return render_template('purchase_page.html', title='Покупка товара', item=item)
+
+
 @app.route('/items/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_items(id):
@@ -143,10 +152,10 @@ def login():
 def index():
     sessions = db_session.create_session()
     item = sessions.query(items.Items)
-    if request.method == 'POST':
-        session['tag'] = request.form['search']
-        return redirect('/')
-    return render_template("index.html", items=item)
+    search = request.args.get('s', default="", type=str)
+    if search:
+        return render_template("index.html", items=item, search=search.lower())
+    return render_template("index.html", items=item, search="")
 
 
 @app.route('/register', methods=['GET', 'POST'])

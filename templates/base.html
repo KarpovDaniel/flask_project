@@ -19,23 +19,27 @@
         border: 0px solid white;
         padding: 0 0px;
         }
-
-
-
     </style>
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-light bg-primary">
+    <nav class="navbar navbar-light bg-primary" style="height:80px;">
         <a class="navbar-brand" href="/"><h3>GusShop.AN</h3></a>
         {% if current_user.is_authenticated %}
+        <form action="" method="get">
+            <input name="s" placeholder="Искать здесь..." type="search"
+                   style="width:600px; height: 50px; border: 5px solid #ffffff;
+                    border-radius:30px; padding: 6px;">
+            <button style="height:50px;width:100px; border-radius:10px;"
+                    type="submit">Поиск
+            </button>
+        </form>
         {% if current_user.id not in (1, 2) %}
         <a style="color: #ffffff;" class="navbar-brand"
            href="/basket"> Корзина </a>
         {% endif %}
         <a style="background-color: #ffffff; border: 5px solid #ffffff;
-                    border-radius:5px; padding: 6px"
-           class="navbar-brand"
+                    border-radius:5px; padding: 6px;" class="navbar-brand"
            href="/logout"> {{current_user.name}}
         </a>
         {% else %}
