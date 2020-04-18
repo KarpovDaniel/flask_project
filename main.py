@@ -110,8 +110,6 @@ def items_delete(id):
 def buy(id):
     sessions = db_session.create_session()
     item = sessions.query(items.Items).get(id)
-    item.count -= 1
-    sessions.commit()
     return render_template('purchase_page.html', title='Покупка товара', item=item)
 
 
