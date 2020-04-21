@@ -110,6 +110,9 @@ def items_delete(id):
 def buy(id):
     sessions = db_session.create_session()
     item = sessions.query(items.Items).get(id)
+    basket_item = sessions.query(basket.Basket).get(id)
+    sessions.delete(basket_item)
+    sessions.commit()
     return render_template('purchase_page.html', title='Покупка товара', item=item)
 
 
