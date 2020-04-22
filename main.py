@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort, session
+from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import IntegerField
@@ -56,6 +56,10 @@ class EditForm(FlaskForm):
     submit = SubmitField('Применить')
 
 
+def reformat(s):
+    return '\n'.join([s[i].strip() + ': ' + s[i + 1].strip() for i in range(0, len(s), 2)])
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -76,11 +80,11 @@ def add_items():
             item.title = form.title.data
             item.content = form.content.data
             item.count = form.count.data
-            item.display = form.display.data
-            item.processor = form.processor.data
-            item.ram = form.ram.data
-            item.videoadapter = form.videoadapter.data
-            item.battery = form.battery.data
+            item.display = reformat(form.display.data.split('\n'))
+            item.processor = reformat(form.processor.data.split('\n'))
+            item.ram = reformat(form.ram.data.split('\n'))
+            item.videoadapter = reformat(form.videoadapter.data.split('\n'))
+            item.battery = reformat(form.battery.data.split('\n'))
             item.main_characteristics = form.main_characteristics.data
             item.price = form.price.data
             item.photo = '/static/images/image' + str(count_items) + '.png'
