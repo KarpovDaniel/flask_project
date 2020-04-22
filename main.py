@@ -220,8 +220,11 @@ def basket_delete(id):
     items_id = item.item_id
     item_basket = sessions.query(items.Items).get(items_id)
     if item:
-        item_basket.count += item.count
-        sessions.delete(item)
+        if item.count == 1:
+            sessions.delete(item)
+        else:
+            item.count -= 1
+        item_basket.count += 1
         sessions.commit()
     else:
         abort(404)
