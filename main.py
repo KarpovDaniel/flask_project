@@ -2,12 +2,14 @@ from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import IntegerField
+from flask_restful import Api
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
-
+from api_item import ItemListResource,ItemResource
 from data import db_session, items, users, basket
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -57,7 +59,7 @@ class EditForm(FlaskForm):
 
 
 def reformat(s):
-    return '\n'.join([s[i].strip() + ': ' + s[i + 1].strip() for i in range(0, len(s), 2)])
+    return '\n'.join([s[i].strip() + ': ' + s[i + 1].strip() for i in range(0, len(s) - 1, 2)])
 
 
 @app.route('/logout')
@@ -247,6 +249,8 @@ def main():
     db_session.global_init("db/blogs.sqlite")
     sessions = db_session.create_session()
     count_items += len(list(sessions.query(items.Items)))
+    api.add_resource(ItemListResource, '/api/v2/item')
+    api.add_resource(ItemResource, '/api/v2/item/<int:item_id>')
     sessions.close()
     app.run()
 
