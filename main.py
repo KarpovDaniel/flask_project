@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_restful import Api
 from flask_wtf import FlaskForm
 from wtforms import IntegerField
-from flask_restful import Api
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
+
 from api_item import ItemListResource, ItemResource
 from data import db_session, items, users, basket
 
@@ -58,14 +59,14 @@ class EditForm(FlaskForm):
     submit = SubmitField('Применить')
 
 
-def reformat(s):
-    return '\n'.join([s[i].strip() + ': ' + s[i + 1].strip() for i in range(0, len(s) - 1, 2)])
-
-
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect('/')
+
+
+def reformat(s):
+    return '\n'.join([s[i].strip() + ': ' + s[i + 1].strip() for i in range(0, len(s) - 1, 2)])
 
 
 @app.route('/items', methods=['GET', 'POST'])
@@ -73,9 +74,7 @@ def logout():
 def add_items():
     global count_items
     form = ItemsForm()
-    if request.method == 'POST':
-        f = request.files['file']
-        f.save('static/images/image' + str(count_items) + '.png')
+    if 1:
         if form.validate_on_submit():
             sessions = db_session.create_session()
             item = items.Items()
@@ -89,7 +88,10 @@ def add_items():
             item.battery = reformat(form.battery.data.split('\n'))
             item.main_characteristics = form.main_characteristics.data
             item.price = form.price.data
-            item.photo = '/static/images/image' + str(count_items) + '.png'
+            f = request.files['file']
+            if f:
+                f.save('static/images/image' + str(count_items) + '.png')
+                item.photo = '/static/images/image' + str(count_items) + '.png'
             sessions.add(item)
             sessions.commit()
             count_items += 1

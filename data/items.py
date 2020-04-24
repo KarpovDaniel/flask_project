@@ -3,6 +3,7 @@ import datetime
 import sqlalchemy
 from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
+
 from .db_session import SqlAlchemyBase
 
 
@@ -21,5 +22,4 @@ class Items(SqlAlchemyBase, SerializerMixin, UserMixin):
     ram = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     battery = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     count = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    photo = sqlalchemy.Column(sqlalchemy.VARCHAR, nullable=False,
-                              default='/static/images/old.png')
+    photo = sqlalchemy.Column(sqlalchemy.VARCHAR, default='/static/images/old.png')
