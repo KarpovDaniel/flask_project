@@ -27,10 +27,12 @@
                 <h2 align="center" style="margin-top:10px;"> Описание товара: </h2> <br>
                 <h6 style="margin-left:15px;"> {{ item.content }} </h6>
                 <h2 align="center">Характеристики: </h2> <br>
+                {% if item.display not is None %}
                 <h4 style="margin-left:15px;"><b> Экран: </b></h4>
                 {% for dspl in item.display.split('\n') %}
                     <h6 style="margin-left:15px;"> {{ dspl }} </h6>
                 {% endfor %}
+                {% endif %}
                 <h4 style="margin-left:15px;"><b> Процессор: </b></h4>
                 {% for process in item.processor.split('\n') %}
                     <h6 style="margin-left:15px;"> {{ process }} </h6>

@@ -34,6 +34,9 @@ parser.add_argument('title', required=True)
 parser.add_argument('price', required=True)
 parser.add_argument('main_characteristics', required=True)
 parser.add_argument('content', required=True)
+parser.add_argument('display', required=True)
+parser.add_argument('processor', required=True)
+parser.add_argument('videoadapter', required=True)
 parser.add_argument('count', required=True, type=int)
 
 

@@ -21,4 +21,5 @@ class Items(SqlAlchemyBase, SerializerMixin, UserMixin):
     ram = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     battery = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     count = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    photo = sqlalchemy.Column(sqlalchemy.VARCHAR, nullable=True)
+    photo = sqlalchemy.Column(sqlalchemy.VARCHAR, nullable=False,
+                              default='/static/images/old.png')
