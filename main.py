@@ -5,7 +5,7 @@ from wtforms import IntegerField
 from flask_restful import Api
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
-from api_item import ItemListResource,ItemResource
+from api_item import ItemListResource, ItemResource
 from data import db_session, items, users, basket
 
 app = Flask(__name__)
