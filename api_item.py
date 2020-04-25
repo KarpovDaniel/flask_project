@@ -16,8 +16,7 @@ class ItemResource(Resource):
         abort_if_item_not_found(item_id)
         session = db_session.create_session()
         item = session.query(items.Items).get(item_id)
-        return jsonify({'item': item.to_dict(
-            only=('title', 'price', 'main_characteristics', 'content'))})
+        return jsonify({'item': item.to_dict()})
 
     def delete(self, item_id):
         abort_if_item_not_found(item_id)
@@ -34,10 +33,12 @@ parser.add_argument('title', required=True)
 parser.add_argument('price', required=True)
 parser.add_argument('main_characteristics', required=True)
 parser.add_argument('content', required=True)
-parser.add_argument('display', required=True)
+parser.add_argument('count', required=True, type=int)
 parser.add_argument('processor', required=True)
 parser.add_argument('videoadapter', required=True)
-parser.add_argument('count', required=True, type=int)
+parser.add_argument('ram', required=True)
+parser.add_argument('battery', required=True)
+parser.add_argument('display', required=True)
 
 
 class ItemListResource(Resource):
@@ -50,13 +51,19 @@ class ItemListResource(Resource):
     def post(self):
         args = parser.parse_args()
         session = db_session.create_session()
+        print(1)
         item = items.Items(
             id=args['id'],
             title=args['title'],
             price=args['price'],
             main_characteristics=args['main_characteristics'],
             content=args['content'],
-            count=args['count']
+            count=args['count'],
+            ram=args['ram'],
+            display=args['display'],
+            proccesor=args['processor'],
+            videoadapter=args['videoadapter'],
+            battery=args['battery']
         )
         session.add(item)
         session.commit()

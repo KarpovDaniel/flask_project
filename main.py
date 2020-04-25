@@ -88,6 +88,7 @@ def add_items():
             item.battery = reformat(form.battery.data.split('\n'))
             item.main_characteristics = form.main_characteristics.data
             item.price = form.price.data
+            item.price = form.price.data
             f = request.files['file']
             if f:
                 f.save('static/images/image' + str(count_items) + '.png')
