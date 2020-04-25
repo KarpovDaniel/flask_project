@@ -74,29 +74,28 @@ def reformat(s):
 def add_items():
     global count_items
     form = ItemsForm()
-    if 1:
-        if form.validate_on_submit():
-            sessions = db_session.create_session()
-            item = items.Items()
-            item.title = form.title.data
-            item.content = form.content.data
-            item.count = form.count.data
-            item.display = reformat(form.display.data.split('\n'))
-            item.processor = reformat(form.processor.data.split('\n'))
-            item.ram = reformat(form.ram.data.split('\n'))
-            item.videoadapter = reformat(form.videoadapter.data.split('\n'))
-            item.battery = reformat(form.battery.data.split('\n'))
-            item.main_characteristics = form.main_characteristics.data
-            item.price = form.price.data
-            item.price = form.price.data
-            f = request.files['file']
-            if f:
-                f.save('static/images/image' + str(count_items) + '.png')
-                item.photo = '/static/images/image' + str(count_items) + '.png'
-            sessions.add(item)
-            sessions.commit()
-            count_items += 1
-            return redirect('/')
+    if form.validate_on_submit():
+        sessions = db_session.create_session()
+        item = items.Items()
+        item.title = form.title.data
+        item.content = form.content.data
+        item.count = form.count.data
+        item.display = reformat(form.display.data.split('\n'))
+        item.processor = reformat(form.processor.data.split('\n'))
+        item.ram = reformat(form.ram.data.split('\n'))
+        item.videoadapter = reformat(form.videoadapter.data.split('\n'))
+        item.battery = reformat(form.battery.data.split('\n'))
+        item.main_characteristics = form.main_characteristics.data
+        item.price = form.price.data
+        item.price = form.price.data
+        f = request.files['file']
+        if f:
+            f.save('static/images/image' + str(count_items) + '.png')
+            item.photo = '/static/images/image' + str(count_items) + '.png'
+        sessions.add(item)
+        sessions.commit()
+        count_items += 1
+        return redirect('/')
     return render_template('items.html', title='Добавление товара', form=form)
 
 
@@ -181,10 +180,9 @@ def register():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
-        user = users.User(
-            name=form.name.data,
-            email=form.email.data
-        )
+        user = users.User()
+        user.name = form.name.data,
+        user.email = form.email.data
         user.set_password(form.password.data)
         sessions.add(user)
         sessions.commit()

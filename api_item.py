@@ -1,7 +1,7 @@
-from flask import Flask, render_template, redirect, request, abort, jsonify
-from flask_restful import reqparse, abort, Api, Resource
+from flask import abort, jsonify
+from flask_restful import reqparse, abort, Resource
 
-from data import db_session, items, users, basket
+from data import db_session, items
 
 
 def abort_if_item_not_found(item_id):
@@ -51,7 +51,6 @@ class ItemListResource(Resource):
     def post(self):
         args = parser.parse_args()
         session = db_session.create_session()
-        print(1)
         item = items.Items(
             id=args['id'],
             title=args['title'],
@@ -61,7 +60,7 @@ class ItemListResource(Resource):
             count=args['count'],
             ram=args['ram'],
             display=args['display'],
-            proccesor=args['processor'],
+            processor=args['processor'],
             videoadapter=args['videoadapter'],
             battery=args['battery']
         )
