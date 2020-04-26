@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 style="margin-top: 20px; margin-left: 500px;">Корзина</h1>
+<h1 style="margin-top: 30px;" align="center">Корзина</h1>
+{% set vars = {'flag': True} %}
 {% for item in basket %}
+{% if vars.update({'flag': False}) %} {% endif %}
 <div>
     {% if item.user_id == current_user.id %}
     <table style="margin-top: 60px; margin-left:-105px" border="0" width="100%"
@@ -29,4 +31,9 @@
     {% endif %}
 </div>
 {% endfor %}
+{% if vars.flag %}
+<h1 align="center" style="margin-top: 300px;">
+    Корзина пуста!
+</h1>
+{% endif %}
 {% endblock %}

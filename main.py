@@ -253,7 +253,7 @@ def main():
     api.add_resource(ItemListResource, '/api/v2/item')
     api.add_resource(ItemResource, '/api/v2/item/<int:item_id>')
     sessions.close()
-    app.run()
+    app.run(port=8080, host='127.0.0.1')
 
 
 if __name__ == '__main__':
