@@ -114,6 +114,10 @@ def items_delete(id):
     return redirect('/')
 
 
+@app.route('/categories')
+def categories():
+    return render_template('categories.html', title='Категории')
+
 @app.route('/buy/<int:id>')
 def buy(id):
     sessions = db_session.create_session()
