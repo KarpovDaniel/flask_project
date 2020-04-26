@@ -8,11 +8,6 @@
     <p>
         {{ form.title.label }} <br>
         {{ form.title(class="form-control") }} <br>
-        {% for error in form.title.errors %}
-    <p class="alert alert-danger" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
     </p>
     <p>
         {{ form.price.label }} <br>
@@ -25,11 +20,6 @@
     <p>
         {{ form.content.label }} <br>
         {{ form.content(class="form-control") }} <br>
-        {% for error in form.content.errors %}
-    <p class="alert alert-danger" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
     </p>
     <p>
         {{ form.display.label }} <br>
@@ -41,15 +31,19 @@
     </p>
      <p>
         {{ form.videoadapter.label }} <br>
-        {{ form.videoadapter(class="form-control") }} <br>
-    </p>
-     <p>
+         {{ form.videoadapter(class="form-control") }} <br>
+     </p>
+    <p>
         {{ form.ram.label }} <br>
         {{ form.ram(class="form-control") }} <br>
     </p>
-     <p>
+    <p>
         {{ form.battery.label }} <br>
         {{ form.battery(class="form-control") }} <br>
+    </p>
+    <p>
+        {{ form.category.label }} <br>
+        {{ form.category(class="form-control") }} <br>
     </p>
     <p>
         {{ form.count.label }} <br>

@@ -49,6 +49,7 @@ class ItemsForm(FlaskForm):
     videoadapter = TextAreaField('Видеокарта')
     ram = TextAreaField('ОЗУ')
     battery = TextAreaField('Батарея и автономность')
+    category = TextAreaField('Категория')
     count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
@@ -87,7 +88,7 @@ def add_items():
         item.videoadapter = reformat(form.videoadapter.data.split('\n'))
         item.battery = reformat(form.battery.data.split('\n'))
         item.main_characteristics = form.main_characteristics.data
-        item.price = form.price.data
+        item.category = form.category.data
         item.price = form.price.data
         f = request.files['file']
         if f:
@@ -138,6 +139,8 @@ def edit_items(id):
         sessions = db_session.create_session()
         item = sessions.query(items.Items).filter(items.Items.id == id).first()
         form.title.data = item.title
+        form.price.data = item.price
+        form.count.data = item.count
     if form.validate_on_submit():
         sessions = db_session.create_session()
         item = sessions.query(items.Items).filter(items.Items.id == id).first()
