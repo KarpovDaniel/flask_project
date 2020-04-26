@@ -19,39 +19,89 @@
         border: 0px solid white;
         padding: 0 0px;
         }
+
+
+
     </style>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-light bg-primary" style="height:80px;">
-        <a class="navbar-brand" href="/"><h3>GusShop.AN</h3></a>
+<nav class="navbar navbar-expand-lg navbar-light bg-primary sticky-top">
+    <a class="navbar-brand" href="/">GusShop.AN</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <p class="mt-3">Добро пожаловать!</p>
+        </ul>
         {% if current_user.is_authenticated %}
-        <form action="" method="get">
-            <input name="s" placeholder="Искать здесь..." type="search"
-                   style="width:600px; height: 50px; border: 5px solid #ffffff;
+        <ul class="navbar-nav">
+            <li class="nav-item mr-2">
+                <form action="" method="get">
+                    <input name="s" placeholder="Искать здесь..." type="search"
+                           style="width:600px; height: 50px; border: 5px solid #ffffff;
                     border-radius:30px; padding: 6px;">
-            <button style="height:50px;width:100px; border-radius:10px;"
-                    type="submit">Поиск
-            </button>
-        </form>
-        {% if current_user.id not in (1, 2) %}
-        <a style="color: #ffffff;" class="navbar-brand"
-           href="/basket"> Корзина </a>
-        {% endif %}
-        <a style="background-color: #ffffff; border: 5px solid #ffffff;
-                    border-radius:5px; padding: 6px;" class="navbar-brand"
-           href="/logout"> {{current_user.name}}
-        </a>
+                    <button style="height:50px;width:100px; border-radius:10px;"
+                            type="submit">Поиск
+                    </button>
+                </form>
+            </li>
+            <li class="nav-item">
+                <a style="color: #ffffff;" class="navbar-brand nav-link"
+                   href="/basket"> Корзина </a>
+            </li>
+            <li class="nav-item">
+                <a style="background-color: #ffffff; border: 5px solid #ffffff;
+                    border-radius:5px; padding: 4px;" class="navbar-brand nav-link"
+                   href="/logout"> {{current_user.name}}
+                </a>
+            </li>
+        </ul>
         {% else %}
-        <p>
-            <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
-            <a class="btn btn-success" href="/login">Войти</a>
-        </p>
+        <ul class="navbar-nav">
+            <li class="nav-item mr-2">
+                <form action="" method="get">
+                    <input name="s" placeholder="Искать здесь..." type="search"
+                           style="width:600px; height: 50px; border: 5px solid #ffffff;
+                    border-radius:30px; padding: 6px;">
+                    <button style="height:50px;width:100px; border-radius:10px;"
+                            type="submit">Поиск
+                    </button>
+                </form>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-success mt-1 mr-3" href="/register">Зарегистрироваться</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-success mt-1 " href="/login">Войти</a>
+            </li>
+        </ul>
         {% endif %}
-    </nav>
-</header>
+    </div>
+</nav>
+
+
 <main role="main" class="container">
     {% block content %}{% endblock %}
 </main>
+
+<footer id="sticky-footer" class="py-4 bg-primary text-white-50">
+    <div class="text-center">
+        <small>Copyright &copy; Your Website</small>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
 </body>
 </html>
