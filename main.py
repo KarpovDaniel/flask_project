@@ -62,7 +62,7 @@ class EditForm(FlaskForm):
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect('/index')
 
 
 def reformat(s):
@@ -95,7 +95,7 @@ def add_items():
         sessions.add(item)
         sessions.commit()
         count_items += 1
-        return redirect('/')
+        return redirect('/index')
     return render_template('items.html', title='Добавление товара', form=form)
 
 
@@ -111,12 +111,13 @@ def items_delete(id):
         sessions.commit()
     else:
         abort(404)
-    return redirect('/')
+    return redirect('/index')
 
 
-@app.route('/categories')
+@app.route('/')
 def categories():
     return render_template('categories.html', title='Категории')
+
 
 @app.route('/buy/<int:id>')
 def buy(id):
@@ -143,7 +144,7 @@ def edit_items(id):
         item.price = form.price.data
         item.count = form.count.data
         sessions.commit()
-        return redirect('/')
+        return redirect('/index')
     return render_template('editor.html', title='Редактирование товара', form=form)
 
 
@@ -156,12 +157,12 @@ def login():
                                                  form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect('/')
+            return redirect('/index')
         return render_template('login.html', message='Неправильный логин или пароль', form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route("/")
+@app.route("/index")
 def index():
     sessions = db_session.create_session()
     item = sessions.query(items.Items)
@@ -220,7 +221,7 @@ def edit_basket(id, flag):
     item.count -= 1
     sessions.commit()
     if not flag:
-        return redirect('/')
+        return redirect('/index')
     return redirect('/about_item/' + str(id))
 
 
