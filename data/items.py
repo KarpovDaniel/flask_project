@@ -23,3 +23,4 @@ class Items(SqlAlchemyBase, SerializerMixin, UserMixin):
     battery = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     count = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     photo = sqlalchemy.Column(sqlalchemy.VARCHAR, default='/static/images/old.png')
+    category = sqlalchemy.Column(sqlalchemy.String, nullable=True)

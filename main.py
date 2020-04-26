@@ -15,6 +15,7 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 count_items = 0
+category = 'phones&laptop'
 
 
 @login_manager.user_loader
@@ -162,14 +163,18 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route("/index")
-def index():
+@app.route('/index/<type_item>')
+@app.route('/index')
+def index(type_item=False):
+    global category
+    if type_item:
+        category = type_item
     sessions = db_session.create_session()
     item = sessions.query(items.Items)
-    search = request.args.get('s', default="", type=str)
+    search = request.args.get('s', default="", type=str).lower()
     if search:
-        return render_template("index.html", items=item, search=search.lower())
-    return render_template("index.html", items=item, search="")
+        return render_template("index.html", items=item, search=search, category=category)
+    return render_template("index.html", items=item, search="", category=category)
 
 
 @app.route('/register', methods=['GET', 'POST'])
