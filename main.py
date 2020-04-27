@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_restful import Api
 from flask_wtf import FlaskForm
-from wtforms import IntegerField
+from wtforms import IntegerField, SelectField
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired
 
@@ -49,7 +49,8 @@ class ItemsForm(FlaskForm):
     videoadapter = TextAreaField('Видеокарта')
     ram = TextAreaField('ОЗУ')
     battery = TextAreaField('Батарея и автономность')
-    category = TextAreaField('Категория')
+    category = SelectField('Категория', validators=[DataRequired()], choices=[('1', 'laptop'),
+                                                                                ('2', "phones")])
     count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
@@ -104,7 +105,10 @@ def add_items():
         item.videoadapter = reformat(form.videoadapter.data.split('\n'))
         item.battery = reformat(form.battery.data.split('\n'))
         item.main_characteristics = form.main_characteristics.data
-        item.category = form.category.data
+        if form.category.data == '1':
+            item.category = 'laptop'
+        else:
+            item.category = 'phones'
         item.price = form.price.data
         f = request.files['file']
         if f:
