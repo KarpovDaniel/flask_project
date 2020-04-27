@@ -61,6 +61,22 @@ class EditForm(FlaskForm):
     submit = SubmitField('Применить')
 
 
+class LengthError(Exception):
+    error = 'Пароль должен состоять не менее чем из 8 символов!'
+
+
+class SymbolError(Exception):
+    error = 'В пароле должен быть хотя бы один символ!'
+
+
+class LetterError(Exception):
+    error = 'В пароле должна быть хотя бы одна большая и маленькая буква!'
+
+
+class DigitError(Exception):
+    error = 'В пароле должна быть хотя бы одна цифра!'
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -172,6 +188,8 @@ def index(type_item=False):
     global category
     if type_item:
         category = type_item
+    else:
+        category = 'phones&laptop'
     sessions = db_session.create_session()
     item = sessions.query(items.Items)
     search = request.args.get('s', default="", type=str).lower()
@@ -184,23 +202,62 @@ def index(type_item=False):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        result = check_password(form.password.data)
+        if result != 'OK':
+            return render_template('register.html',
+                                   title='Регистрация',
+                                   form=form, email_error="OK", again_password_error="OK",
+                                   password_error=result)
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Пароли не совпадают")
+                                   form=form,email_error="OK", password_error="OK",
+                                   again_password_error="Пароли не совпадают")
         sessions = db_session.create_session()
         if sessions.query(users.User).filter(users.User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Такой пользователь уже есть")
-        user = users.User()
-        user.name = form.name.data,
-        user.email = form.email.data
+                                   password_error="OK", again_password_error="OK",
+                                   email_error="Такой пользователь уже есть")
+        user = users.User(
+            name=form.name.data,
+            email=form.email.data,
+        )
         user.set_password(form.password.data)
         sessions.add(user)
         sessions.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form)
+    return render_template('register.html', title='Регистрация', form=form, email_error="OK",
+                           password_error="OK", again_password_error="OK")
+
+
+def test_password(password):
+    flagki = [0, 0, 0, 0]
+    for el in password:
+        if el.isdigit():
+            flagki[0] = 1
+        elif el.isalpha():
+            if el.isupper():
+                flagki[1] = 1
+            else:
+                flagki[2] = 1
+        else:
+            flagki[3] = 1
+    if flagki[2] * flagki[1] == 0:
+        raise LetterError
+    if flagki[0] == 0:
+        raise DigitError
+    if flagki[3] == 0:
+        raise SymbolError
+    return 'ok'
+
+
+def check_password(password):
+    try:
+        if len(password) < 8:
+            raise LengthError
+        test_password(password)
+        return 'OK'
+    except (LengthError, SymbolError, LetterError, DigitError) as ex:
+        return ex.error
 
 
 @app.route("/basket")
@@ -266,7 +323,7 @@ def main():
     api.add_resource(ItemListResource, '/api/v2/item')
     api.add_resource(ItemResource, '/api/v2/item/<int:item_id>')
     sessions.close()
-    app.run(port=8080, host='127.0.0.1')
+    app.run()
 
 
 if __name__ == '__main__':
