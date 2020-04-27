@@ -50,7 +50,7 @@ class ItemsForm(FlaskForm):
     ram = TextAreaField('ОЗУ')
     battery = TextAreaField('Батарея и автономность')
     category = SelectField('Категория', validators=[DataRequired()], choices=[('1', 'laptop'),
-                                                                                ('2', "phones")])
+                                                                              ('2', "phones")])
     count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
@@ -214,7 +214,7 @@ def register():
                                    password_error=result)
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
-                                   form=form,email_error="OK", password_error="OK",
+                                   form=form, email_error="OK", password_error="OK",
                                    again_password_error="Пароли не совпадают")
         sessions = db_session.create_session()
         if sessions.query(users.User).filter(users.User.email == form.email.data).first():
@@ -235,11 +235,11 @@ def register():
 
 def test_password(password):
     flagki = [0, 0, 0, 0]
-    for el in password:
-        if el.isdigit():
+    for element in password:
+        if element.isdigit():
             flagki[0] = 1
-        elif el.isalpha():
-            if el.isupper():
+        elif element.isalpha():
+            if element.isupper():
                 flagki[1] = 1
             else:
                 flagki[2] = 1
