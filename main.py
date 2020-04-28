@@ -81,7 +81,7 @@ class DigitError(Exception):
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect('/index')
+    return redirect('/')
 
 
 def reformat(s):

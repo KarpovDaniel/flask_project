@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 {% set vars = {'flag': True} %}
-<h2 style="margin-top:-30px;"> Товары в нашем магазине: </h2>
+{% if current_user.is_authenticated %}
+    <h2> Товары в нашем магазине: </h2>
+{% else %}
+     <h2 class="mt-5"> Товары в нашем магазине: </h2>
+{% endif %}
 {% for item in items %}
 <div>
     {% if search in item.title.lower() and item.category in category %}
