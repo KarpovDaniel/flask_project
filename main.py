@@ -145,10 +145,16 @@ def categories():
 def buy(id):
     sessions = db_session.create_session()
     item = sessions.query(items.Items).get(id)
+    return render_template('purchase_page.html', title='Покупка товара', item=item)
+
+
+@app.route('/success/<int:id>')
+def success(id):
+    sessions = db_session.create_session()
     basket_item = sessions.query(basket.Basket).get(id)
     sessions.delete(basket_item)
     sessions.commit()
-    return render_template('purchase_page.html', title='Покупка товара', item=item)
+    return render_template('success.html', title='Покупка успешно совершена')
 
 
 @app.route('/items/<int:id>', methods=['GET', 'POST'])

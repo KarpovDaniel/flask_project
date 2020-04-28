@@ -1,7 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 align="center" style="margin-top:360px;"> Товар успешно куплен! </h1>
-<h4 align="center" style="margin-top: 30px;"> Примерное время доставки ∞ дней...</h4>
-<h4 align="center"> Ожидайте! </h4>
+<div class="col-auto">
+    <div id="wrapper">
+        <img src="/static/img/card.png" style="margin-left:57px;" alt="">
+        <input type="text" class="form-control"
+               style="position: absolute; top: 151px; left: 103px;
+                                   height: 78px; width: 612px;"
+               id="inlineFormInputGroup1 img"
+               placeholder="0000-0000-0000-0000">
+        <input type="text" class="form-control"
+               style="position: absolute; top: 261px; left: 254px;
+                                   height: 38px; width: 151px;"
+               id="inlineFormInputGroup2 img1"
+               placeholder="month">
+        <input type="text" class="form-control"
+               style="position: absolute; top: 261px; left: 424px;
+                                   height: 38px; width: 149px;"
+               id="inlineFormInputGroup3 img2"
+               placeholder="year">
+        <input type="text" class="form-control"
+               style="position: absolute; top: 154px; left: 903px;
+                                   height: 64px; width: 94px;"
+               id="inlineFormInputGroup4 img3"
+               placeholder="***">
+        <input type="text" class="form-control"
+               style="position: absolute; top: 322px; left: 255px;
+                                   height: 65px; width: 460px;"
+               id="inlineFormInputGroup5 img4"
+               placeholder="Ivan Ivanov">
+    </div>
+    <a href="/success/{{ item.id }}" style="margin-left:70px; height: 40px; width: 160px;"
+       class="btn btn-success mt-3">Оплата
+    </a>
+</div>
 {% endblock %}
