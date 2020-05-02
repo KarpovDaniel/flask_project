@@ -286,7 +286,7 @@ def test_cvv(cvv):
 
 
 def test_username(username):
-    if username[0].isalpha() and username[1].isalpha()\
+    if username[0].isalpha() and username[1].isalpha() \
             and len(username.split()) == 2:
         return "OK"
     return "Некорректно введено ФИ владельца карты"
@@ -308,7 +308,7 @@ def register():
                                    again_password_error="Пароли не совпадают")
         sessions = db_session.create_session()
         if sessions.query(users.User).filter(users.User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html', title='Регистрация', form=form,
                                    password_error="OK", again_password_error="OK",
                                    email_error="Такой пользователь уже есть")
         user = users.User(
