@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, render_template, redirect, request, abort
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_restful import Api
@@ -30,6 +32,14 @@ class RegisterForm(FlaskForm):
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
     name = StringField('Имя пользователя', validators=[DataRequired()])
     submit = SubmitField('Зарегистрироваться')
+
+
+class CardForm(FlaskForm):
+    card_number = StringField('Номер карты')
+    month = IntegerField('Месяц')
+    year = IntegerField("Год")
+    cardholder = StringField('Владелец карты')
+    cvv_code = IntegerField('CVV')
 
 
 class LoginForm(FlaskForm):
@@ -81,7 +91,7 @@ class DigitError(Exception):
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect('/index')
+    return redirect('/')
 
 
 def reformat(s):
@@ -139,13 +149,6 @@ def items_delete(id):
 @app.route('/')
 def categories():
     return render_template('categories.html', title='Категории')
-
-
-@app.route('/buy/<int:id>')
-def buy(id):
-    sessions = db_session.create_session()
-    item = sessions.query(items.Items).get(id)
-    return render_template('purchase_page.html', title='Покупка товара', item=item)
 
 
 @app.route('/success/<int:id>')
@@ -206,6 +209,50 @@ def index(type_item=False):
     if search:
         return render_template("index.html", items=item, search=search, category=category)
     return render_template("index.html", items=item, search="", category=category)
+
+
+@app.route('/buy/<int:id>', methods=['GET', 'POST'])
+@login_required
+def buy(id):
+    sessions = db_session.create_session()
+    item = sessions.query(items.Items).get(id)
+    form = CardForm()
+    if request.method == 'POST':
+        card_number = request.form.get('card_number')
+        print(card_number)
+        month = int(request.form.get('month'))
+        year = int(request.form.get('year'))
+        result_test_card_number = algorithm_luna(card_number)
+        result_date_test = test_date(month, year)
+        return render_template('purchase_page.html',
+                               form=form, card_error=result_test_card_number,
+                               date_error=result_date_test, item=item)
+    return render_template('purchase_page.html',
+                           form=form, card_error='OK',
+                           date_error='OK', item=item)
+
+
+def algorithm_luna(card_number):
+    summa_chisel, summa_n_chisla = 0, 0
+    for i in range(1, len(card_number) + 1):
+        if i % 2 == 0:
+            summa_n_chisla = int(card_number[i - 1]) * 2
+            if summa_n_chisla > 9:
+                summa_n_chisla = summa_n_chisla % 10 + summa_n_chisla // 10
+            summa_chisel += summa_n_chisla
+        else:
+            summa_chisel += int(card_number[i - 1])
+    if summa_chisel % 10:
+        return 'Номер карты введен некорректно'
+    return 'OK'
+
+
+def test_date(month, year):
+    current_datetime = datetime.now()
+    if ((month >= current_datetime.year and 1 <= month <= 12)
+            and year >= current_datetime.year):
+        return 'OK'
+    return 'Введенная дата некорректная дата'
 
 
 @app.route('/register', methods=['GET', 'POST'])

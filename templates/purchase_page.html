@@ -4,31 +4,29 @@
 <div class="col-auto">
     <div id="wrapper">
         <img src="/static/img/card.png" style="margin-left:57px;" alt="">
-        <input type="text" class="form-control"
-               style="position: absolute; top: 151px; left: 103px;
+        <form action="" method="post">
+            <input type="text" class="form-control" name="card_number"
+                   style="position: absolute; top: 151px; left: 103px;
                                    height: 78px; width: 612px;"
-               id="inlineFormInputGroup1 img"
-               placeholder="0000-0000-0000-0000">
-        <input type="text" class="form-control"
-               style="position: absolute; top: 261px; left: 254px;
+                   placeholder="0000-0000-0000-0000">
+            <input type="text" class="form-control" name="month"
+                   style="position: absolute; top: 261px; left: 254px;
                                    height: 38px; width: 151px;"
-               id="inlineFormInputGroup2 img1"
-               placeholder="month">
-        <input type="text" class="form-control"
-               style="position: absolute; top: 261px; left: 424px;
+                   placeholder="month">
+            <input type="text" class="form-control" name="year"
+                   style="position: absolute; top: 261px; left: 424px;
                                    height: 38px; width: 149px;"
-               id="inlineFormInputGroup3 img2"
-               placeholder="year">
-        <input type="text" class="form-control"
-               style="position: absolute; top: 154px; left: 903px;
+                   placeholder="year">
+            <input type="text" class="form-control" name="csv"
+                   style="position: absolute; top: 154px; left: 903px;
                                    height: 64px; width: 94px;"
-               id="inlineFormInputGroup4 img3"
-               placeholder="***">
-        <input type="text" class="form-control"
-               style="position: absolute; top: 322px; left: 255px;
+                   placeholder="***">
+            <input type="text" class="form-control" name="name"
+                   style="position: absolute; top: 322px; left: 255px;
                                    height: 65px; width: 460px;"
-               id="inlineFormInputGroup5 img4"
-               placeholder="Ivan Ivanov">
+                   placeholder="Ivan Ivanov">
+            <input type="submit" value="Оплата">
+        </form>
     </div>
     <a href="/success/{{ item.id }}" style="margin-left:70px; height: 40px; width: 160px;"
        class="btn btn-success mt-3">Оплата
