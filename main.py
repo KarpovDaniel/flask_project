@@ -34,14 +34,6 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Зарегистрироваться')
 
 
-class CardForm(FlaskForm):
-    card_number = StringField('Номер карты')
-    month = IntegerField('Месяц')
-    year = IntegerField("Год")
-    cardholder = StringField('Владелец карты')
-    cvv_code = IntegerField('CVV')
-
-
 class LoginForm(FlaskForm):
     email = StringField("Почта", validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
@@ -59,8 +51,8 @@ class ItemsForm(FlaskForm):
     videoadapter = TextAreaField('Видеокарта')
     ram = TextAreaField('ОЗУ')
     battery = TextAreaField('Батарея и автономность')
-    category = SelectField('Категория', validators=[DataRequired()], choices=[('1', 'laptop'),
-                                                                              ('2', "phones")])
+    category = SelectField('Категория', validators=[DataRequired()],
+                           choices=[('1', 'laptop'), ('2', "phones")])
     count = IntegerField('Количество')
     submit = SubmitField('Применить')
 
@@ -216,43 +208,88 @@ def index(type_item=False):
 def buy(id):
     sessions = db_session.create_session()
     item = sessions.query(items.Items).get(id)
-    form = CardForm()
     if request.method == 'POST':
         card_number = request.form.get('card_number')
-        print(card_number)
-        month = int(request.form.get('month'))
-        year = int(request.form.get('year'))
+        month = request.form.get('month')
+        year = request.form.get('year')
+        cvv = request.form.get('cvv')
+        username = request.form.get('name')
+        test_username(username)
         result_test_card_number = algorithm_luna(card_number)
         result_date_test = test_date(month, year)
-        return render_template('purchase_page.html',
-                               form=form, card_error=result_test_card_number,
-                               date_error=result_date_test, item=item)
+        result_cvv_test = test_cvv(cvv)
+        result_username_test = test_username(username)
+        if result_test_card_number != 'OK':
+            return render_template('purchase_page.html',
+                                   card_error=result_test_card_number,
+                                   date_error='OK',
+                                   cvv_error='OK',
+                                   username_error='OK',
+                                   item=item)
+        if result_date_test != 'OK':
+            return render_template('purchase_page.html',
+                                   card_error='OK',
+                                   cvv_error='OK',
+                                   username_error='OK',
+                                   date_error=result_date_test, item=item)
+        if result_username_test != 'OK':
+            return render_template('purchase_page.html',
+                                   card_error='OK',
+                                   date_error='OK', cvv_error='OK',
+                                   username_error=result_username_test, item=item)
+        if result_cvv_test != 'OK':
+            return render_template('purchase_page.html',
+                                   card_error='OK',
+                                   date_error='OK', cvv_error=result_cvv_test,
+                                   username_error='OK', item=item)
+        return redirect('/success/' + str(id))
     return render_template('purchase_page.html',
-                           form=form, card_error='OK',
-                           date_error='OK', item=item)
+                           card_error='OK', date_error='OK',
+                           cvv_error='OK', username_error='OK',
+                           item=item)
 
 
 def algorithm_luna(card_number):
     summa_chisel, summa_n_chisla = 0, 0
-    for i in range(1, len(card_number) + 1):
-        if i % 2 == 0:
-            summa_n_chisla = int(card_number[i - 1]) * 2
-            if summa_n_chisla > 9:
-                summa_n_chisla = summa_n_chisla % 10 + summa_n_chisla // 10
-            summa_chisel += summa_n_chisla
-        else:
-            summa_chisel += int(card_number[i - 1])
-    if summa_chisel % 10:
+    card_number = ''.join(''.join(card_number.split()).split('-'))[::-1]
+    if card_number.isdigit():
+        for i in range(1, len(card_number) + 1):
+            if i % 2 == 0:
+                summa_n_chisla = int(card_number[i - 1]) * 2
+                if summa_n_chisla > 9:
+                    summa_n_chisla = summa_n_chisla % 10 + summa_n_chisla // 10
+                summa_chisel += summa_n_chisla
+            else:
+                summa_chisel += int(card_number[i - 1])
+    if summa_chisel % 10 or len(card_number) != 16:
         return 'Номер карты введен некорректно'
     return 'OK'
 
 
 def test_date(month, year):
-    current_datetime = datetime.now()
-    if ((month >= current_datetime.year and 1 <= month <= 12)
-            and year >= current_datetime.year):
-        return 'OK'
-    return 'Введенная дата некорректная дата'
+    month, year = month.strip(), year.strip()
+    if month.isdigit() and year.isdigit():
+        month, year = int(month), int(year)
+        current_datetime = datetime.now()
+        if (((month >= current_datetime.month
+              and year >= current_datetime.year % 100)
+             or year >= current_datetime.year % 100)
+                and 1 <= month <= 12):
+            return 'OK'
+    return 'Введенная дата некорректна'
+
+
+def test_cvv(cvv):
+    if cvv.isdigit() and len(str(cvv)) == 3:
+        return "OK"
+    return "Некорректный CVV-код"
+
+
+def test_username(username):
+    if username[0].isalpha() and username[1].isalpha()\
+            and len(username.split()) == 2:
+        return "OK"
+    return "Некорректно введено ФИ владельца карты"
 
 
 @app.route('/register', methods=['GET', 'POST'])

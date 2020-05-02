@@ -9,27 +9,38 @@
                    style="position: absolute; top: 151px; left: 103px;
                                    height: 78px; width: 612px;"
                    placeholder="0000-0000-0000-0000">
+            {% if card_error != "OK" %}
+                <p class="alert alert-danger mt-1" role="alert">{{ card_error }}</p>
+            {% endif %}
             <input type="text" class="form-control" name="month"
                    style="position: absolute; top: 261px; left: 254px;
                                    height: 38px; width: 151px;"
                    placeholder="month">
+            {% if date_error != "OK" %}
+                <p class="alert alert-danger" role="alert">{{ date_error }}</p>
+            {% endif %}
             <input type="text" class="form-control" name="year"
                    style="position: absolute; top: 261px; left: 424px;
                                    height: 38px; width: 149px;"
                    placeholder="year">
-            <input type="text" class="form-control" name="csv"
+            <input type="text" class="form-control" name="cvv"
                    style="position: absolute; top: 154px; left: 903px;
                                    height: 64px; width: 94px;"
                    placeholder="***">
+            {% if cvv_error != "OK" %}
+                <p class="alert alert-danger" role="alert">{{ cvv_error }}</p>
+            {% endif %}
             <input type="text" class="form-control" name="name"
                    style="position: absolute; top: 322px; left: 255px;
                                    height: 65px; width: 460px;"
                    placeholder="Ivan Ivanov">
-            <input type="submit" value="Оплата">
+            {% if username_error != "OK" %}
+                <p class="alert alert-danger" role="alert">{{ username_error }}</p>
+            {% endif %}
+            <input type="submit"
+                   style="margin-left:70px; height: 40px; width: 160px;"
+                   value="Оплата">
         </form>
     </div>
-    <a href="/success/{{ item.id }}" style="margin-left:70px; height: 40px; width: 160px;"
-       class="btn btn-success mt-3">Оплата
-    </a>
 </div>
 {% endblock %}
