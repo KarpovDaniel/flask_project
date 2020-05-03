@@ -14,6 +14,7 @@ from data import db_session, items, users, basket
 app = Flask(__name__)
 api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+db_session.global_init("db/blogs.sqlite")
 login_manager = LoginManager()
 login_manager.init_app(app)
 count_items = 0
@@ -411,7 +412,6 @@ def about_item(id):
 
 def main():
     global count_items
-    db_session.global_init("db/blogs.sqlite")
     sessions = db_session.create_session()
     count_items += len(list(sessions.query(items.Items)))
     api.add_resource(ItemListResource, '/api/v2/item')
