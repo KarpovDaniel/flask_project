@@ -8,12 +8,12 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
-    <title>GusShop.AN</title>
+    <title> GusShop.AN </title>
 </head>
 <body>
 <link rel="stylesheet" href="/static/css/style.css">
 <nav class="navbar navbar-expand-lg navbar-light bg-primary sticky-top">
-    <a class="navbar-brand" href="/">GusShop.AN</a>
+    <a class="navbar-brand" href="/"> GusShop.AN </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -27,10 +27,7 @@
                     <input name="s" placeholder="Искать здесь..." type="search"
                            style="width:400px; height: 40px; border: 5px solid #ffffff;
                     border-radius:30px; padding: 6px;">
-                    <a class="btn btn-success"
-                            style="background-color: #ffffff;"
-                            type="submit">Поиск
-                    </a>
+                    <button class="btn btn-light" type="submit">Поиск </button>
                 </form>
             </li>
             {% if current_user.is_authenticated %}
