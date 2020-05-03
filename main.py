@@ -250,18 +250,18 @@ def buy(id):
 
 
 def algorithm_luna(card_number):
-    sum_numbers, sum_n_number = 0, 0
+    summa_chisel, summa_n_chisla = 0, 0
     card_number = ''.join(''.join(card_number.split()).split('-'))[::-1]
     if card_number.isdigit():
         for i in range(1, len(card_number) + 1):
             if i % 2 == 0:
-                sum_n_number = int(card_number[i - 1]) * 2
-                if sum_n_number > 9:
-                    sum_n_number = sum_n_number % 10 + sum_n_number // 10
-                sum_numbers += sum_n_number
+                summa_n_chisla = int(card_number[i - 1]) * 2
+                if summa_n_chisla > 9:
+                    summa_n_chisla = summa_n_chisla % 10 + summa_n_chisla // 10
+                summa_chisel += summa_n_chisla
             else:
-                sum_numbers += int(card_number[i - 1])
-    if sum_numbers % 10 or len(card_number) != 16:
+                summa_chisel += int(card_number[i - 1])
+    if summa_chisel % 10 or len(card_number) != 16:
         return 'Номер карты введен некорректно'
     return 'OK'
 
