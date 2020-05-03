@@ -286,9 +286,10 @@ def test_cvv(cvv):
 
 
 def test_username(username):
-    if username[0].isalpha() and username[1].isalpha() \
-            and len(username.split()) == 2:
-        return "OK"
+    if username:
+        if username[0].isalpha() and username[1].isalpha() \
+                and len(username.split()) == 2:
+            return "OK"
     return "Некорректно введено ФИ владельца карты"
 
 
